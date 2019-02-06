@@ -1,0 +1,50 @@
+import LoginComponent from '../login/login'
+import CommentsComponent from '../comment/comment';
+import HomeComponent from '../home';
+
+export default function router($stateProvider, $urlRouterProvider) {
+
+
+  const login = {
+    name: "home.login",
+    state: {
+      url: "/login",
+      views: {
+        'main@home': {
+          component: LoginComponent.name
+        }
+      }
+    }
+  };
+
+  const home = {
+    name: "home",
+    state: {
+      url: "/lv",
+      views: {
+        'main@': {
+          component: HomeComponent.name
+        },
+      }
+    }
+  };
+  const comments = {
+    name: "home.comments",
+    state: {
+      url: "/comments",
+      views: {
+        'main@home': {
+          component: CommentsComponent.name
+        }
+      }
+    }
+  };
+
+  $urlRouterProvider.otherwise("/lv/login");
+
+  $stateProvider
+    .state(home.name, home.state)
+    .state(login.name, login.state)
+    .state(comments.name, comments.state)
+
+}

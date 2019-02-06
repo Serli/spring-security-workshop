@@ -1,0 +1,15 @@
+<header >
+  <span ng-if="ctrl.userService.user"
+        class="fas fa-user-alt fa-2x"
+        title="Connecté en tant que {{ctrl.userService.user.email}}"
+        > {{ctrl.userService.user.name}}</span>
+  <span class="title"><b>Livre d'or</b></span>
+  <span ng-if="ctrl.userService.user"
+        title="Se déconnecter"
+        class="fas fa-sign-out-alt fa-2x"
+        ng-click="ctrl.userService.deconnecter();"></span>
+</header>
+
+<div ui-view="main" class="main">
+
+</div>
