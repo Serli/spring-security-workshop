@@ -5,6 +5,7 @@ import com.serli.security.model.CommentRepository;
 import com.serli.security.model.User;
 import com.serli.security.model.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
@@ -14,35 +15,23 @@ class Initializer implements CommandLineRunner {
 
     private final UserRepository repository;
     private final CommentRepository commentRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public Initializer(UserRepository repository, CommentRepository repo) {
+    public Initializer(UserRepository repository, CommentRepository repo, BCryptPasswordEncoder encoder) {
         this.repository = repository;
         this.commentRepository = repo;
+        this.bCryptPasswordEncoder = encoder;
     }
 
     @Override
     public void run(String... strings) {
-        User user1 = new User( "test", "test@test.com", "test");
-        User user2 = new User("test1", "test1@test.com", "test1");
-        User user3 = new User("test2", "test2@test.com", "test2");
-        User user4 = new User("test3", "test3@test.com", "test3");
-        Stream.of(user1,
-                user2,
-                user3,
-                user4,
-                new User("test4", "test4@test.com", "test4"),
-                new User("test5", "test5@test.com", "test5")).forEach(user ->
-                repository.save(user)
-        );
 
-
-        Stream.of(new Comment(null, "test de message", user1),
-                new Comment(null, "test de message 2", user2),
-                new Comment(null, "test de message 3", user3),
-                new Comment(null, "test de message 4", user4)
-        ).forEach(comment ->
-                commentRepository.save(comment)
-        );
+        for (int i = 1; i < 5; i++) {
+            User user = new User("test" + i, "test" + i + "@test.com", this.bCryptPasswordEncoder.encode("test" + i));
+            repository.save(user);
+            Comment comment = new Comment(null, "test de message", user);
+            commentRepository.save(comment);
+        }
 
 
         repository.findAll().forEach(System.out::println);

@@ -6,14 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityManager;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,30 +19,19 @@ class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserRepository userRepository;
-    private EntityManager em;
-    private JdbcTemplate jdbcTemplate;
 
-    public UserController(UserRepository userRepository, EntityManager em, JdbcTemplate template) {
-        this.em = em;
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jdbcTemplate = template;
     }
-
-
 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-        String sql = "Select * from user where email='" + username + "' and password='" + password + "'";
-        List<User> maps = jdbcTemplate.query(sql, (resultSet, i) -> new User(resultSet.getInt(1),
-                resultSet.getString(3),
-                resultSet.getString(2),
-                resultSet.getString(4)
-        ));
+        Optional<User> byEmail = userRepository.findByEmail(username);
 
-
-        if (maps != null && maps.size() > 0) {
-            return ResponseEntity.ok().body(maps.get(0));
+        log.info("l'utilisateur %s est connecté.", username);
+        if (byEmail.isPresent() && byEmail.get().getPassword().equals(password)) {
+            return ResponseEntity.ok().body(byEmail.get());
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

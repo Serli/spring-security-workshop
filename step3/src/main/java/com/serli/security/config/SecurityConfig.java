@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
@@ -60,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             UserDetails user = userDetailsService.loadUserByUsername(name);
 
-            if (user == null || !user.getPassword().equals(password)) {
+            if (user == null || !bCryptPasswordEncoder().matches(password,user.getPassword())) {
                 throw new BadCredentialsException("Username/Password does not match for " + auth.getPrincipal());
             }
 
@@ -73,4 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public JwtConfig jwtConfig() {
         return new JwtConfig();
     }
+
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
 }

@@ -8,11 +8,15 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AppAuthProvider extends DaoAuthenticationProvider {
 
     @Autowired
-    UserService userDetailsService;
+    private UserService userDetailsService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -26,7 +30,7 @@ public class AppAuthProvider extends DaoAuthenticationProvider {
 
         UserDetails user = userDetailsService.loadUserByUsername(name);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Username/Password does not match for " + auth.getPrincipal());
         }
 
