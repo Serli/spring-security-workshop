@@ -72,15 +72,14 @@ Rendez-vous [http://localhost:9000/livredor/](http://localhost:9000/livredor/) d
 
 * Créer un package model
 * Ajouter une classe **User**
-    
-    
-    @Data //Annotation lombok qui permet la génération des getter setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Entity
-    public class User {
-        ...
-    }
+
+        @Data //Annotation lombok qui permet la génération des getter setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Entity
+        public class User {
+            ...
+        }
 
 * Ajouter de même une classe **Comment**
 
@@ -90,41 +89,22 @@ Rendez-vous [http://localhost:9000/livredor/](http://localhost:9000/livredor/) d
 * Créer un repository par entité
     
     
-    public interface UserRepository extends JpaRepository<User, String> {
-        ...
-    }
+        public interface UserRepository extends JpaRepository<User, String> {
+            ...
+        }
 ## Création du service
 
 * Créer un package service
 * Créer un controller par domaine
         
     
-    @RestController
-    @RequestMapping("/api/user")
-    class UserController {
-        ...
-    }
+        @RestController
+        @RequestMapping("/api/user")
+        class UserController {
+            ...
+        }
 
 Le but est maintenat d'implémenter les points d'entrées qui seront utiles à votre application
-```bash
-npm start
-```
-
-It will start a local server using `webpack-dev-server` which will watch, build (in-memory), and reload for you. The port will be displayed to you as `http://localhost:8080`.
-
-## Developing
-
-### Build files
-
-* single run: `npm run build`
-* build files and watch: `npm start`
-
-## Testing
-
-#### 1. Unit Tests
-
-* single run: `npm test`
-* live mode (TDD style): `npm run test-watch`
 
 # License
 
