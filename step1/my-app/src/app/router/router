@@ -20,7 +20,6 @@ export default function router($stateProvider, $urlRouterProvider) {
   const home = {
     name: "home",
     state: {
-      url: "/lv",
       views: {
         'main@': {
           component: HomeComponent.name
@@ -40,7 +39,7 @@ export default function router($stateProvider, $urlRouterProvider) {
     }
   };
 
-  $urlRouterProvider.otherwise("/lv/login");
+  $urlRouterProvider.otherwise("/login");
 
   $stateProvider
     .state(home.name, home.state)

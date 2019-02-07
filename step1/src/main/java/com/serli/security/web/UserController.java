@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -33,7 +33,7 @@ class UserController {
 
 
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         String sql = "Select * from user where email='" + username + "' and password='" + password + "'";
         List<User> maps = jdbcTemplate.query(sql, (resultSet, i) -> new User(resultSet.getInt(1),

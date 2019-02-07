@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/comment")
 public class CommentController {
 
     private CommentRepository commentRepository;
@@ -16,12 +16,12 @@ public class CommentController {
         this.commentRepository = repo;
     }
 
-    @GetMapping("/comments")
-    Collection<Comment> users() {
+    @GetMapping
+    Collection<Comment> comments() {
         return commentRepository.findAll();
     }
 
-    @PostMapping("/comment")
+    @PostMapping
     void save(@RequestBody Comment comment) {
         commentRepository.save(comment);
     }
