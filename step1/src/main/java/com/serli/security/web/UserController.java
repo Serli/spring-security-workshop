@@ -1,16 +1,19 @@
 package com.serli.security.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serli.security.model.User;
 import com.serli.security.model.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Optional;
 
 @RestController
@@ -26,14 +29,24 @@ class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+    public void login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
         Optional<User> byEmail = userRepository.findByEmail(username);
 
         log.info("l'utilisateur %s est connecté.", username);
         if (byEmail.isPresent() && byEmail.get().getPassword().equals(password)) {
-            return ResponseEntity.ok().body(byEmail.get());
+            ObjectMapper mapper = new ObjectMapper();
+            String userJson = mapper.writeValueAsString(byEmail.get());
+            Cookie tokenCookie = new Cookie("USER", URLEncoder.encode(userJson));
+//        tokenCookie.setHttpOnly(true);
+            tokenCookie.setPath("/");
+//        tokenCookie.setSecure(true);
+            tokenCookie.setMaxAge(-1);
+//        tokenCookie.setDomain("localhost");
+            response.addCookie(tokenCookie);
+            response.sendRedirect("/livredor");
+        } else {
+            response.sendRedirect("/#!/login/error");
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 }

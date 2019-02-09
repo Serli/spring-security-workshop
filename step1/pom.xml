@@ -16,6 +16,8 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <bundle.app>/livredor/app.bundle.js</bundle.app>
+        <bundle.login>/livredor/login.bundle.js</bundle.login>
     </properties>
 
     <dependencies>
@@ -42,6 +44,23 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>public/*.html</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>public/**.html</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

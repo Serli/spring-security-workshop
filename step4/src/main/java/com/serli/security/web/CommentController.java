@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     private CommentRepository commentRepository;
@@ -18,12 +18,12 @@ public class CommentController {
         this.commentRepository = repo;
     }
 
-    @GetMapping("/comments")
+    @GetMapping
     Collection<Comment> users() {
         return commentRepository.findAll();
     }
 
-    @PostMapping("/comment")
+    @PostMapping
     void save(@RequestBody Comment comment) {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         comment.setUser(principal);

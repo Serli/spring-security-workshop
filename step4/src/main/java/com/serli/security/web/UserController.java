@@ -54,7 +54,7 @@ class UserController {
 
 
     @PostMapping("/login")
-    public void login(@RequestParam String username, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
         try {
             final Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

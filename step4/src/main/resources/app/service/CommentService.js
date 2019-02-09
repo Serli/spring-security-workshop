@@ -16,7 +16,7 @@ export class CommentService {
   }
 
   addComment(comment){
-    return this.$http.post('/api/comment', {text: comment},
+    return this.$http.post('/api/comments', {text: comment},
       {
         credentials:'include',
         headers: {
