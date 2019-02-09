@@ -22,7 +22,7 @@ class Initializer implements CommandLineRunner {
     public void run(String... strings) {
 
         for (int i = 1; i < 5; i++) {
-            User user = new User("test" + i, "test" + i + "@test.com", "test" + i);
+            User user = new User("test" + i, "test" + i + "@test.com", "test" + i, i==1);
             repository.save(user);
             Comment comment = new Comment(null, "test de message "+i, user);
             commentRepository.save(comment);

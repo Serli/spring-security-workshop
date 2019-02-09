@@ -41,6 +41,11 @@ export default class CommentCtrl {
 
     }
 
+    deleteComment(comment){
+        this.$http.delete("/api/comments?id="+comment.id)
+            .then(()=>this.loadComments());
+    }
+
     closeNewComment() {
         this.mode = undefined;
         this.newCommentText = undefined;

@@ -25,4 +25,9 @@ public class CommentController {
     void save(@RequestBody Comment comment) {
         commentRepository.save(comment);
     }
+
+    @DeleteMapping
+    void delete(@RequestParam Long id){
+        commentRepository.delete(new Comment(id, null, null));
+    }
 }
