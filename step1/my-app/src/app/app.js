@@ -12,7 +12,7 @@ import 'angular-ui-router';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import {default as userServiceName, UserService} from "./service/UserService";
-// Declare app level module which depends on views, and core components
+// Declare livredor level module which depends on views, and core components
 angular.module('app', ['ui.router'])
   .component(Home.name, Home.component)
   .component(Login.name, Login.component)

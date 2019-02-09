@@ -64,7 +64,6 @@ Rendez-vous [http://localhost:9000/livredor/](http://localhost:9000/livredor/) d
     * [Création du model](#model)
     * [Création du repository](#repository)
     * [Création du service](#service)
-* [License](#license)
 
 # Démarrer le projet de services
 
@@ -104,8 +103,10 @@ Rendez-vous [http://localhost:9000/livredor/](http://localhost:9000/livredor/) d
             ...
         }
 
-Le but est maintenat d'implémenter les points d'entrées qui seront utiles à votre application
+Le but est maintenant d'implémenter les points d'entrées qui seront utiles à votre application.
+* Permettre à l'utilisateur de se connecter
+* Récupérer les messages postés.
+* Ajouter un message
 
-# License
+Il ne reste qu'a modifié votre javascript afin de faire un formulaire de connection ainsi qu'une page de consultation, et d'ajout de commentaires.
 
-[Serli](/LICENSE)
