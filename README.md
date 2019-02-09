@@ -10,6 +10,6 @@ On pourra aussi imaginer un profil Admin permettant de supprimer un commentaire.
 
 
 * [Création de l'application](./step1)
-* [Sécuriser Spring way](#model)
-* [Sécuriser via token](#repository)
-* [Sécuriser Good way](#service)
+* [Sécuriser Spring way](./step2)
+* [Sécuriser via token](./step3)
+* [Sécuriser Good way](./step4)
