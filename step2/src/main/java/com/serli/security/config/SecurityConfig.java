@@ -4,6 +4,7 @@ import com.serli.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,13 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     @Autowired
     UserService userDetailsService;
@@ -38,21 +39,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .authenticationProvider(getProvider())
-                .formLogin()
-                .loginPage("/#!/lv/login")
-                .loginProcessingUrl("/api/login")
-                .successHandler(new SimpleUrlAuthenticationSuccessHandler())
-                .failureHandler(new SimpleUrlAuthenticationFailureHandler())
-                .and()
                 .logout()
-                .logoutUrl("/api/logout")
+                .logoutUrl("/api/user/logout")
                 .logoutSuccessHandler(new SimpleUrlLogoutSuccessHandler())
                 .invalidateHttpSession(true)
                 .and()
                 .authorizeRequests()
 
-                .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/logout").permitAll()
+                .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/api/user/logout").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/comments").hasAuthority("WRITE_ACCESS")
                 .anyRequest().authenticated();
 
     }
@@ -65,9 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:login.html");
+        registry.addViewController("/error").setViewName("forward:login.html");
+        registry.addViewController("/livredor").setViewName("forward:livredor.html");
+    }
 }

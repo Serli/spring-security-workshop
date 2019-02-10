@@ -1,16 +1,21 @@
 package com.serli.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +30,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
+    private boolean admin;
+
     public User(String name, String email, String password){
         this.name=name;
         this.email = email;
@@ -32,8 +39,12 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if(admin){
+            return Arrays.asList(new SimpleGrantedAuthority("WRITE_ACCESS"));
+        }
+        return null ;
     }
 
     @Override

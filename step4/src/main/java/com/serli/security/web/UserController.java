@@ -27,6 +27,8 @@ import java.util.UUID;
 class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
     private AuthTokenRepository authTokenRepository;
 
     @Value("${com.serli.auth.token}")
@@ -34,10 +36,6 @@ class UserController {
 
     @Value("${com.serli.auth.expired}")
     private int expiredTime;
-
-    public UserController(AuthTokenRepository authTokenRepository) {
-        this.authTokenRepository = authTokenRepository;
-    }
 
 
     @Autowired

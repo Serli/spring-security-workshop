@@ -3,7 +3,7 @@ export default function AuthInterceptor($state) {
     responseError: (rejection) => {
       switch (rejection.status) {
         case 403 :
-          $state.go("home.login");
+          document.location.href = "/";
           break;
       }
       return rejection;

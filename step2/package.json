@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/Serli/spring-security-workshop/issues"
   },
-  "homepage": "https://github.com/Serli/spring-security-workshop",
+  "homepage": "https://github.com/Serli/spring-security-workshop/step2",
   "dependencies": {
     "angular": "^1.7.0",
     "angular-ui-router": "^1.0.20",

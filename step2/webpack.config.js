@@ -30,7 +30,8 @@ module.exports = function makeWebpackConfig() {
    * Karma will set this when it's a test build
    */
   config.entry = isTest ? void 0 : {
-    app: './src/livredor/livredor.js'
+    app: './src/main/resources/app/livredor/app.js',
+    login:'./src/main/resources/app/login/login.js'
   };
 
   /**
@@ -41,11 +42,11 @@ module.exports = function makeWebpackConfig() {
    */
   config.output = isTest ? {} : {
     // Absolute output directory
-    path: __dirname + '/dist',
+    path: __dirname + '/target',
 
     // Output path from the view of the page
     // Uses webpack-dev-server in development
-    publicPath: '/',
+    publicPath: '/livredor/',
 
     // Filename for entry points
     // Only adds hash in build mode
@@ -170,15 +171,15 @@ module.exports = function makeWebpackConfig() {
     })
   ];
 
-  // Skip rendering index.html in test mode
+  // Skip rendering livredor.html in test mode
   if (!isTest) {
     // Reference: https://github.com/ampedandwired/html-webpack-plugin
-    // Render index.html
+    // Render livredor.html
     config.plugins.push(
-      new HtmlWebpackPlugin({
-        template: './src/public/index.html',
-        inject: 'body'
-      }),
+    //   new HtmlWebpackPlugin({
+    //     template: '../public/livredor.html',
+    //     inject: 'body'
+    //   }),
 
       // Reference: https://github.com/webpack/extract-text-webpack-plugin
       // Extract css files
@@ -205,7 +206,7 @@ module.exports = function makeWebpackConfig() {
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([{
-        from: __dirname + '/src/public'
+        from: __dirname + '/src/main/resources/public'
       }])
     )
   }
@@ -216,12 +217,12 @@ module.exports = function makeWebpackConfig() {
    * Reference: http://webpack.github.io/docs/webpack-dev-server.html
    */
   config.devServer = {
-    contentBase: './src/public',
+    contentBase: './src/main/resources/public',
     port:9000,
     proxy: {
-      '/api': {
+      '/': {
         target: 'http://localhost:8080',
-        secure: false
+        secure: true
       }
     }
   };
