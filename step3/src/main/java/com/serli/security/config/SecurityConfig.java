@@ -4,6 +4,7 @@ import com.serli.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,13 +15,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     @Autowired
     UserService userDetailsService;
@@ -39,10 +41,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .exceptionHandling().authenticationEntryPoint(new Http403ForbiddenEntryPoint() {
+        })
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/livredor").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/comments").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
@@ -61,13 +67,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             UserDetails user = userDetailsService.loadUserByUsername(name);
 
-            if (user == null || !bCryptPasswordEncoder().matches(password,user.getPassword())) {
+            if (user == null || !bCryptPasswordEncoder().matches(password, user.getPassword())) {
                 throw new BadCredentialsException("Username/Password does not match for " + auth.getPrincipal());
             }
 
             return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
 
         };
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:login.html");
+        registry.addViewController("/livredor").setViewName("forward:livredor.html");
     }
 
     @Bean
@@ -77,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

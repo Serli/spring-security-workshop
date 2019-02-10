@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
@@ -51,6 +51,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 User userDetails = (User) userService.loadUserByUsername(username);
+                List<SimpleGrantedAuthority> scope = (List<SimpleGrantedAuthority>) claims.get("scope");
 
                 if (isValidToken(claims, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));

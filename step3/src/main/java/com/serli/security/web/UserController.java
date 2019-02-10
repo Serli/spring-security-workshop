@@ -11,7 +11,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,15 +21,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -52,7 +48,7 @@ class UserController {
     @Autowired
     private JwtConfig jwtTokenUtil;
 
-    @GetMapping("/user/current")
+    @GetMapping("/current")
     ResponseEntity<?> getUserConnected() {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -60,19 +56,20 @@ class UserController {
     }
 
 
-    @PostMapping("/user/login")
-    public ResponseEntity<?> login(@Valid @RequestBody User loginUser) {
+    @PostMapping("/login")
+    public ResponseEntity<AuthToken> login(@RequestBody User userLogin, HttpServletResponse resp) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginUser.getUsername(),
-                        loginUser.getPassword()
+                        userLogin.getUsername(),
+                        userLogin.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final User user = (User) authentication.getPrincipal();
-        Claims claims = Jwts.claims().setSubject(loginUser.getUsername());
-        claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-
+        Claims claims = Jwts.claims().setSubject(user.getUsername());
+//        if (user.isAdmin()) {
+//            claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+//        }
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -85,3 +82,5 @@ class UserController {
 
 
 }
+
+
