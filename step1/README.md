@@ -5,6 +5,11 @@ Le but de cette étape est de mettre en place une application de type Livre d'or
 Afin de créer un projet Spring Boot vous pouvez utiliser [l'initializer de Spring Boot](https://start.spring.io).
 Il vous faudra alors ajouter les dépendances vers web, jpa, et h2. Vous pourrez aussi utiliser lombok, un projet vous permettant d'éviter de produire du code répétitif qui n'a pas de valeur ajoutée (getter, setter, constructors ...).
 
+Je vous propose ici un projet paramétré comme il le faut.
+Vous trouverez dans :
+* [src/main/java](./src/main/java) les sources Java
+* [src/main/resources/app](./src/main/resources/app) l'application angular
+* [src/main/resources/public](./src/main/resources/public) les resources public (html, image)
 
 > Cloner/Télécharger le repo.
 
