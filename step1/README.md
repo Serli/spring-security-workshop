@@ -87,6 +87,8 @@ Le but est maintenant d'implémenter les points d'entrées qui seront utiles à 
 * Ajouter un message.
 * Supprimer un message si l'utilisateur est administrateur.
 
+Vous pourrez utiliser Postman pour les tester.
+
 ## Définition des vues
  Spring nous permet de définir des points d'entrées à notre application sans définir de controller.
  Il suffit d'implémenter l'interface **WebMvcConfigurer** et d'overrider la méthode **addViewControllers**

@@ -6,6 +6,12 @@ Cette application sera du type **Livre d'or**, comportant une page de login et u
 On pourra aussi imaginer un profil Admin permettant de supprimer un commentaire.
 
 
+>Pré-requis
+>* [Node](https://nodejs.org/en/)
+>* [Intellij](https://www.jetbrains.com/shop/eform/students) (conseillé)
+>* [Postman](https://www.getpostman.com) (conseillé) 
+>* [Git](https://www.linode.com/docs/development/version-control/how-to-install-git-on-linux-mac-and-windows/) (optionnel) 
+
 # Table des Matières
 
 
