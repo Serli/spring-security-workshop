@@ -21,7 +21,10 @@ export default function router($stateProvider, $urlRouterProvider, $locationProv
             url: "/error",
             views: {
                 'error@login': {
-                    template: `<div class="error">Couple login/mot de passe incorrect</div>`,
+                    controller:function($scope, $timeout, $state){
+                            $timeout(()=>alert("Couple login/password incorrect!"),100);
+                            $state.go("login");
+                    }
                 }
             }
         }

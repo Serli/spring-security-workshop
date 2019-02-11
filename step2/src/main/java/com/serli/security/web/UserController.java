@@ -12,11 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("")
 class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -28,27 +30,13 @@ class UserController {
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
-    @PostMapping("/login")
-    public void login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
-        try {
-            final Authentication authentication = authenticationProvider.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            username,
-                            password
-                    )
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//    @PostMapping("/indirection")
+//    public void indirection(HttpServletRequest request,  HttpServletResponse response) throws IOException, ServletException {
+//        //request.getRequestDispatcher("/login").forward(request, response);
+//    }
 
-            response.sendRedirect("/livredor");
-        } catch (Exception e) {
-            response.sendRedirect("/#!/login/error");
-        }
-
-    }
-
-    @GetMapping("/current")
+    @GetMapping("/api/user/current")
     ResponseEntity<User> getUserConnected() {
-
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         user.setPassword(null);
         return ResponseEntity.ok().body(user);

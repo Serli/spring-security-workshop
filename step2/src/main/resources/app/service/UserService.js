@@ -3,6 +3,7 @@ export class UserService {
     constructor($state, $http) {
         this.$state = $state;
         this.$http = $http;
+        this.api = "/api/user";
     }
 
     set user(user) {
@@ -14,17 +15,11 @@ export class UserService {
     }
 
     deconnecter() {
-        this.$http.post("/api/user/logout").then(() => {
-            this.user = undefined;
-            document.location.href = "/";
-        }).catch(e => {
-            alert("Déconnexion impossible");
-            console.warn(e);
-        });
+        document.location.href = `${this.api}/logout`;
     }
 
     getCurrentUser() {
-        return this.$http.get("/api/user/current")
+        return this.$http.get(`${this.api}/current`)
             .then(resp => {
                 if (resp.status === 200) {
                     this._user = resp.data;

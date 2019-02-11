@@ -16,8 +16,4 @@ class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-
-    @PostMapping("/login")
-    public void login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
-    }
 }
