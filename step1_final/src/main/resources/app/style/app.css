@@ -1,0 +1,10 @@
+/* styles in src/style directory are applied to the whole page */
+body {
+  background: #dedee4;
+  color: #fff;
+  margin:0;
+}
+
+a {
+  color: #03A9F4;
+}
