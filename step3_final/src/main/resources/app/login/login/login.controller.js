@@ -14,10 +14,9 @@ export default class LoginCtrl {
             username: this.id,
             password: this.password
         };
-        this.userService.login(data)
-            .then(() => {
-                this.logged();
-            });
+        this.userService.login(data).then(() => {
+            this.logged();
+        });
 
     }
 

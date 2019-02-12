@@ -15,55 +15,29 @@ export class UserService {
         return this._user;
     }
 
-    set token(token) {
-        token ? sessionStorage.setItem("x-auth-token", token)
-            : sessionStorage.clear();
-        this._token = token;
-    }
+    login(user) {
 
-    get token() {
-        return this._token || sessionStorage.getItem("x-auth-token");
-    }
-
-    login(data) {
-        return this.$http.post(`${this.api}/login`, data)
-            .then(response => {
-                if (response.status === 200 && response.data) {
-                    this.token = response.data.token;
-                    return this.$q.resolve();
-                }
-                this.$state.go("login.error");
-                return this.$q.reject();
-            })
-            .catch(e => {
-                console.log(e);
-                this.$state.go("login.error");
-            });
     }
 
     deconnecter() {
         this.user = undefined;
-        this.token = undefined;
         document.location.href = "/";
     }
 
     getCurrentUser() {
-        let response = this.token && (
-            this.$http.get(`${this.api}/current`, {
-                headers: {
-                    'Authorization': `Bearer ${this.token}`
+        return this.$http
+            .get(`${this.api}/current`)
+            .then(resp => {
+                if (resp.status === 200) {
+                    this._user = resp.data;
+                    return this._user;
                 }
+                return this.$q.reject(resp);
             })
-                .then(resp => {
-                    if (resp.status === 200) {
-                        this._user = resp.data;
-                        return this._user;
-                    }
-                }).catch((e) => {
-                alert(e);
+            .catch((e) => {
+                return this.$q.reject(e);
             })
-        );
-        return response || this.$q.resolve();
+
     }
 
 }

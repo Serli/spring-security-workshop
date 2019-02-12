@@ -1,12 +1,13 @@
 package com.serli.security.config;
 
 import com.serli.security.model.User;
-import com.serli.security.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,15 +16,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtConfig jwtConfig;
-    private final UserService userService;
+    private final UserDetailsService userService;
+    private final Logger log = LoggerFactory.getLogger(JwtTokenAuthenticationFilter.class);
 
-    public JwtTokenAuthenticationFilter(JwtConfig jwtConfig, UserService userService) {
+    public JwtTokenAuthenticationFilter(JwtConfig jwtConfig, UserDetailsService userService) {
         this.jwtConfig = jwtConfig;
         this.userService = userService;
     }
@@ -51,12 +51,11 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 User userDetails = (User) userService.loadUserByUsername(username);
-                List<SimpleGrantedAuthority> scope = (List<SimpleGrantedAuthority>) claims.get("scope");
 
-                if (isValidToken(claims, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    logger.info("authenticated user " + username + ", setting security context");
+                    log.info("{} -> authenticated user {} session expired {}", request.getRequestURI(), username, claims.getExpiration());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
@@ -65,11 +64,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         chain.doFilter(request, response);
-    }
-
-    private boolean isValidToken(Claims claims, User userDetails) {
-        String username = claims.getSubject();
-        return username.equals(userDetails.getUsername());
     }
 
 }

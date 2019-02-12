@@ -42,6 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private JwtConfig jwtConfig;
+
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
@@ -58,13 +62,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers("/livredor").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/comments").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
-                //TODO
-                .and()
+                .and().addFilterBefore(new JwtTokenAuthenticationFilter(jwtConfig, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(getAuthProvider())
                 .formLogin()
                 .loginPage("/")
                 .loginProcessingUrl("/login")
-                //TODO
+                .successHandler(getAuthSuccessHandler())
         ;
 
     }
@@ -95,6 +98,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         return provider;
     }
 
+    @Bean
+    AuthenticationSuccessHandler getAuthSuccessHandler() {
+        AuthenticationSuccessHandler handler = (httpServletRequest, httpServletResponse, authentication) -> {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            final User user = (User) authentication.getPrincipal();
+            Claims claims = Jwts.claims().setSubject(user.getUsername());
+
+            String token = Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
+                    .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret())
+                    .compact();
+            ObjectMapper mapper = new ObjectMapper();
+            String responseToken = mapper.writeValueAsString(new AuthToken(token));
+
+            httpServletResponse.getWriter().append(responseToken);
+        };
+        return handler;
+    }
+
     @Override
     @Bean
     protected UserDetailsService userDetailsService() {
@@ -105,6 +129,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
             return user;
         };
+    }
+
+    @Bean
+    public JwtConfig jwtConfig() {
+        return new JwtConfig();
     }
 
 
