@@ -1,7 +1,6 @@
 export class UserService {
 
-    constructor($state, $http) {
-        this.$state = $state;
+    constructor($http) {
         this.$http = $http;
         this.api = "/api/user";
     }
@@ -19,15 +18,7 @@ export class UserService {
     }
 
     getCurrentUser() {
-        return this.$http.get(`${this.api}/current`)
-            .then(resp => {
-                if (resp.status === 200) {
-                    this._user = resp.data;
-                    return this._user;
-                }
-            }).catch((e) => {
-                alert(e);
-            });
+        //TODO
     }
 
 }

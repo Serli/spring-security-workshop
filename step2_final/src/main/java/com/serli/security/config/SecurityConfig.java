@@ -25,11 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
-                //TODO
-
-
-                // Empêche Spring de gérer les failles CSRF
-                // cf https://www.baeldung.com/spring-security-csrf
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .authenticationProvider(getAuthProvider())
+                .formLogin()
+                .loginPage("/")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/livredor")
+                .failureUrl("/#!/login/error")
+                .and()
+                .httpBasic()
+                .and()
+                .logout()
+                .logoutUrl("/api/user/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .and()
                 .csrf().disable();
         ;
 
@@ -42,12 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Bean
     public AuthenticationProvider getAuthProvider() {
-        //TODO
-       return null;
+        AppAuthProvider provider = new AppAuthProvider(bCryptPasswordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        //TODO
+        registry.addViewController("/").setViewName("forward:login.html");
+        registry.addViewController("/livredor").setViewName("forward:livredor.html");
     }
 }

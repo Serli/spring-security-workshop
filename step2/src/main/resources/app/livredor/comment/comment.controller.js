@@ -7,8 +7,9 @@ export default class CommentCtrl {
     }
 
     $onInit() {
-        this.loadComments();
-        this.userService.getCurrentUser();
+        this.userService.getCurrentUser().then(() => {
+            this.loadComments();
+        });
     }
 
 
@@ -24,35 +25,34 @@ export default class CommentCtrl {
 
     valider() {
         if (this.newCommentText) {
-
-            this.$http.post('/api/comments', {text: this.newCommentText, user:this.userService.user},
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                }).then(() => {
-                this.closeNewComment();
-            });
+            this.$http
+                .post('/api/comments', {text: this.newCommentText, user: this.userService.user},
+                    {
+                        method: "POST",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                .then(() => {
+                    this.closeNewComment();
+                });
         } else {
             alert("Il faut saisir un texte.")
         }
 
     }
 
-    deleteComment(comment){
-        this.$http.delete("/api/comments?id="+comment.id)
-            .then(()=>this.loadComments());
+    deleteComment(comment) {
+        this.$http
+            .delete("/api/comments?id=" + comment.id)
+            .then(() => this.loadComments());
     }
 
     closeNewComment() {
-        this.mode = undefined;
         this.newCommentText = undefined;
         this.loadComments();
     }
 
-    addComment() {
-        this.mode = "NEW-COMMENT";
-    }
+
 }

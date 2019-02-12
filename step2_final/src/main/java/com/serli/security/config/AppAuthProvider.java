@@ -1,10 +1,14 @@
 package com.serli.security.config;
 
+import com.serli.security.service.UserService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 public class AppAuthProvider extends DaoAuthenticationProvider {
 
@@ -25,11 +29,13 @@ public class AppAuthProvider extends DaoAuthenticationProvider {
                 .toString();
 
 
-        // Il faut vérifier que l'utilisateur dans auth existe à l'aide de la méthode getUserDetailsService().
-        // Mais aussi que le mot de passe correspond
+        UserDetails user = this.getUserDetailsService().loadUserByUsername(name);
 
-        //Puis renvoyer un UsernamePasswordAuthenticationToken si l'utilisateur correspond une exception sinon de type BadCredentialsException
-        return null;
+        if (user == null || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialsException("Username/Password does not match for " + auth.getPrincipal());
+        }
+
+        return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
 
     }
 

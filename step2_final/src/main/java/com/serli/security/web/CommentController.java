@@ -4,7 +4,6 @@ import com.serli.security.model.Comment;
 import com.serli.security.model.CommentRepository;
 import com.serli.security.model.User;
 import org.springframework.context.annotation.Role;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
