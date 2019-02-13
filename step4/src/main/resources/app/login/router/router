@@ -30,6 +30,7 @@ export default function router($stateProvider, $urlRouterProvider, $locationProv
 
     $urlRouterProvider.otherwise("/login");
 
+    $locationProvider.html5Mode(true);
     $stateProvider
         .state(login.name, login.state)
         .state(error.name, error.state)

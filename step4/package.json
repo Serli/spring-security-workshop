@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Serli/spring-security-workshop",
   "dependencies": {
     "angular": "^1.7.0",
+    "angular-cookies": "^1.7.7",
     "angular-ui-router": "^1.0.20",
     "jquery": "^3.3.1"
   },

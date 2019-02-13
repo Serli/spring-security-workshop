@@ -5,7 +5,7 @@ export default function router($stateProvider, $urlRouterProvider, $locationProv
     const comments = {
         name: "comments",
         state: {
-            url: "/comments",
+            url: "/livredor",
             views: {
                 'main@': {
                     component: CommentsComponent.name
@@ -14,8 +14,8 @@ export default function router($stateProvider, $urlRouterProvider, $locationProv
         }
     };
 
-    $urlRouterProvider.otherwise("/comments");
-    // $locationProvider.html5Mode(true);
+    $urlRouterProvider.otherwise("/livredor");
+    $locationProvider.html5Mode(true);
     $stateProvider
         .state(comments.name, comments.state)
 

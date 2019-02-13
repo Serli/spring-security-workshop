@@ -40,4 +40,4 @@ $ rm -rf .git
 * [Création de l'application](./step1)
 * [Sécuriser Spring way](./step2)
 * [Sécuriser via token](./step3)
-* [Sécuriser Good way](./step4)
+* [Sécuriser A good way](./step4)

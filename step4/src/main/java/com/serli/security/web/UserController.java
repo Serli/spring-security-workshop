@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -42,10 +43,8 @@ class UserController {
 
 
     @GetMapping("/current")
-    ResponseEntity<User> getUserConnected() {
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        user.setPassword(null);
+    ResponseEntity<User> getUserConnected(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok().body(user);
     }
 
@@ -68,30 +67,15 @@ class UserController {
             log.info("new session : {} expired in {} user {}", token.getToken(), token.getExpiredDate().toString(), user.getUsername());
 
             Cookie tokenCookie = new Cookie(authToken, token.getToken());
-//        tokenCookie.setHttpOnly(true);
             tokenCookie.setPath("/");
-//        tokenCookie.setSecure(true);
+            tokenCookie.setHttpOnly(true);
             tokenCookie.setMaxAge(expiredTime);
-//        tokenCookie.setDomain("localhost");
             response.addCookie(tokenCookie);
-
-            response.sendRedirect("/");
+            response.sendRedirect("/livredor");
         } catch (Exception e) {
-            response.sendRedirect("/#!/login/error");
+            response.sendError(HttpStatus.LOCKED.value());
         }
 
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletResponse response) throws IOException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<AuthToken> byUserId = authTokenRepository.findByUserId(user.getId());
-
-        byUserId.forEach((authToken) -> {
-            authTokenRepository.delete(authToken);
-            log.info("suppression de la session : {} pour l'utilisateur {}", authToken.getToken(), user.getUsername());
-        });
-        response.sendRedirect("/login");
     }
 
 

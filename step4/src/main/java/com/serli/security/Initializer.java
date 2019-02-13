@@ -28,6 +28,9 @@ class Initializer implements CommandLineRunner {
 
         for (int i = 1; i < 5; i++) {
             User user = new User("test" + i, "test" + i + "@test.com", this.bCryptPasswordEncoder.encode("test" + i));
+            if(i==1){
+                user.setAdmin(true);
+            }
             repository.save(user);
             Comment comment = new Comment(null, "test de message "+i, user);
             commentRepository.save(comment);

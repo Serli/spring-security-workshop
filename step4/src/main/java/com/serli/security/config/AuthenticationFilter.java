@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -33,55 +35,44 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         this.authToken = authToken;
     }
 
-    public Optional<Cookie> readCookie(HttpServletRequest request, String key) {
-        if (request.getCookies() != null) {
-            return Arrays.stream(request.getCookies())
-                    .filter(c -> key.equals(c.getName()))
-                    .findAny();
-        }
-        return Optional.empty();
+    public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        String cookiePath = request.getContextPath() + "/";
+        cookie.setPath(cookiePath);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        Optional<Cookie> token = readCookie(request, authToken);
-        token.ifPresent((value) -> {
+        Cookie token = WebUtils.getCookie(request, authToken);
+        if (token != null) {
             try {
-                Optional<AuthToken> byId = authTokenRepository.findById(value.getValue());
+                Optional<AuthToken> byId = authTokenRepository.findById(token.getValue());
                 byId.ifPresent((authTokenValue) -> {
                     if (authTokenValue.getExpiredDate().after(new Date())) {
                         Integer userId = authTokenValue.getUserId();
                         Optional<User> userOpt = userService.findById(userId);
                         userOpt.ifPresent(user -> {
-                            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+                            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            log.info("url {} : authenticated user {}", request.getRequestURI(), user.getUsername());
+                            log.info("{} {} : authenticated user {}", request.getMethod(), request.getRequestURI(), user.getUsername());
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         });
                     } else {
-                        Optional<Cookie> cookie = readCookie(request, authToken);
-                        cookie.ifPresent((c) -> {
-                            c.setValue(null);
-                            c.setMaxAge(0);
-                            response.addCookie(c);
-                        });
-                        SecurityContextHolder.clearContext();
+                        deleteCookie(request, response, authToken);
                     }
                 });
 
             } catch (Exception e) {
-                Optional<Cookie> cookie = readCookie(request, authToken);
-                cookie.ifPresent((c) -> {
-                    c.setValue(null);
-                    c.setMaxAge(0);
-                    response.addCookie(c);
-                });
+                deleteCookie(request, response, authToken);
                 SecurityContextHolder.clearContext();
             }
-        });
 
+
+        }
         chain.doFilter(request, response);
     }
 

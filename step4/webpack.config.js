@@ -206,7 +206,7 @@ module.exports = function makeWebpackConfig() {
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([{
-        from: __dirname + '/src/main/resources/public'
+        from: __dirname + '/src/main/resources/templates'
       }])
     )
   }
@@ -217,7 +217,7 @@ module.exports = function makeWebpackConfig() {
    * Reference: http://webpack.github.io/docs/webpack-dev-server.html
    */
   config.devServer = {
-    contentBase: './src/main/resources/public',
+    contentBase: './src/main/resources/templates',
     port:9000,
     proxy: {
       '/': {
