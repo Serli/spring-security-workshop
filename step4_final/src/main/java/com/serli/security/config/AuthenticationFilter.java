@@ -1,10 +1,15 @@
 package com.serli.security.config;
 
+import com.serli.security.model.AuthToken;
 import com.serli.security.model.AuthTokenRepository;
+import com.serli.security.model.User;
 import com.serli.security.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
@@ -14,6 +19,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
@@ -42,8 +50,22 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         Cookie token = WebUtils.getCookie(request, authToken);
         if (token != null) {
             try {
-                // Vérifier que le token correspond au existe en base et qu'il n'est pas expiré,
-                // s'il est la valide le mettre dans le contexte
+                Optional<AuthToken> byId = authTokenRepository.findById(token.getValue());
+                byId.ifPresent((authTokenValue) -> {
+                    if (authTokenValue.getExpiredDate().after(new Date())) {
+                        Integer userId = authTokenValue.getUserId();
+                        Optional<User> userOpt = userService.findById(userId);
+                        userOpt.ifPresent(user -> {
+                            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            log.info("{} {} : authenticated user {}", request.getMethod(), request.getRequestURI(), user.getUsername());
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        });
+                    } else {
+                        deleteCookie(request, response, authToken);
+                    }
+                });
+
             } catch (Exception e) {
                 deleteCookie(request, response, authToken);
                 SecurityContextHolder.clearContext();

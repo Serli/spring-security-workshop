@@ -1,5 +1,7 @@
 package com.serli.security.config;
 
+import com.serli.security.model.AuthToken;
+import com.serli.security.model.AuthTokenRepository;
 import com.serli.security.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,14 +24,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Autowired
     UserService userDetailsService;
+
+    @Autowired
+    AuthTokenRepository authTokenRepository;
 
     @Value("${com.serli.auth.token}")
     private String authToken;
@@ -73,6 +91,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .anyRequest().authenticated();
 
         http
+                .addFilterBefore(new AuthenticationFilter(authTokenRepository, userDetailsService, authToken), UsernamePasswordAuthenticationFilter.class);
+
+        http
                 .logout()
                 .logoutUrl("/api/user/logout")
                 .logoutSuccessHandler(getLogoutSuccessHandler())
@@ -80,7 +101,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .invalidateHttpSession(true)
                 .deleteCookies(authToken, csrfCookieTokenName);
 
-
+        http
+                .csrf()
+                .requireCsrfProtectionMatcher(request ->
+                        ("/api/user/login".equals(request.getRequestURI())
+                                || ("/api/comments".equals(request.getRequestURI()) && HttpMethod.POST.matches(request.getMethod())
+                        ))
+                )
+                .csrfTokenRepository(getCsrfTokenRepository())
         ;
 
 
@@ -99,7 +127,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-                //Supprimer de la base de données la session correspondant au cookie de session
+                Cookie token = WebUtils.getCookie(request, authToken);
+                if (token != null) {
+                    Optional<AuthToken> byUserId = authTokenRepository.findById(token.getValue());
+
+                    byUserId.ifPresent((authToken) -> {
+                        authTokenRepository.delete(authToken);
+                        log.info("suppression de la session : {}", authToken.getToken());
+                    });
+                }
             }
         };
     }
