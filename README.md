@@ -38,6 +38,6 @@ $ rm -rf .git
 
 
 * [Création de l'application](./step1)
-* [Sécuriser Spring way](./step2)
-* [Sécuriser via token](./step3)
+* [Sécuriser avec session et cookie de session](./step2)
+* [Sécuriser via token sans session](./step3)
 * [Sécuriser A good way](./step4)
