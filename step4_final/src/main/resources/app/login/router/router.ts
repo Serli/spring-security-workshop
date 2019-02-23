@@ -1,4 +1,4 @@
-import LoginComponent from '../../login/login/login'
+import LoginComponent from '../login/login'
 
 export default function router($stateProvider, $urlRouterProvider, $locationProvider) {
 

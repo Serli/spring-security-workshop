@@ -28,6 +28,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.WebUtils;
 
@@ -159,19 +160,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     }
 
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/")
-    public String index() {
-        return login();
-    }
-
-    @GetMapping("/livredor")
-    public String livredor() {
-        return "livredor";
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:login.html");
+        registry.addViewController("/login").setViewName("forward:login.html");
+        registry.addViewController("/livredor").setViewName("forward:livredor.html");
     }
 
 }

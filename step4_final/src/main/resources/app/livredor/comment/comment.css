@@ -69,6 +69,7 @@ comment .fas.fa-sign-out-alt:hover{
   height: 100px;
   /*height:100%;*/
   overflow: auto;
+  white-space: pre-wrap;
 
 }
 

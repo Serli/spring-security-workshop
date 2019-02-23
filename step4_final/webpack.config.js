@@ -16,8 +16,8 @@ const isProd = ENV === 'build';
 
 module.exports = {
     entry: {
-        app: './src/main/resources/app/livredor/app.js',
-        login: './src/main/resources/app/login/login.js'
+        app: './src/main/resources/app/livredor/app.ts',
+        login: './src/main/resources/app/login/login.ts'
     },
 
     /**
@@ -56,10 +56,15 @@ module.exports = {
      * List: http://webpack.github.io/docs/list-of-loaders.html
      * This handles most of the magic responsible for converting modules
      */
+    resolve: {
+        // Add `.ts` and `.tsx` as a resolvable extension.
+        extensions: [".ts", ".tsx", ".js"]
+    },
 
     // Initialize module
     module: {
         rules: [
+            { test: /\.tsx?$/, loader: "ts-loader" },
             {
                 // JS LOADER
                 // Reference: https://github.com/babel/babel-loader

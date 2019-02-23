@@ -7,7 +7,6 @@ import router from './router/router';
 import 'angular-ui-router';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import 'angular-cookies';
 
 import {default as userServiceName, UserService} from "../service/UserService";
 import {CommentService, default as commentServiceName} from "../service/CommentService";

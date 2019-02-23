@@ -1,9 +1,17 @@
+import {UserService, default as userServiceName} from "../../service/UserService";
+import {CommentService, default as commentServiceName} from "../../service/CommentService";
+
 export default class CommentCtrl {
 
-    constructor(UserService, $sce, CommentService) {
-        this.$sce = $sce;
-        this.userService = UserService;
-        this.commentService = CommentService;
+    private static readonly $inject=[
+        userServiceName,
+        "$sce",
+        commentServiceName
+    ]
+    private comments: Array<any>;
+    private newCommentText: string;
+
+    constructor(private userService:UserService, private $sce, private commentService:CommentService) {
     }
 
     $onInit() {

@@ -1,9 +1,9 @@
-export class UserService {
+import * as angular from "angular";
 
-    constructor($state, $http, $q) {
-        this.$state = $state;
-        this.$http = $http;
-        this.$q = $q;
+export class UserService {
+    private _user: any;
+
+    constructor(private $state, private $http, private $q) {
     }
 
     set user(user) {

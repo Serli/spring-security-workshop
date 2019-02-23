@@ -1,8 +1,7 @@
 export class CommentService {
 
 
-    constructor($http) {
-        this.$http = $http;
+    constructor(private $http) {
     }
 
     loadComments() {

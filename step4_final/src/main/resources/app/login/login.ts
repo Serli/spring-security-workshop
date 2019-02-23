@@ -1,7 +1,6 @@
 import {bootstrap, module} from 'angular';
 import "@babel/polyfill";
 import Login from "./login/login";
-import "jquery";
 
 import router from './router/router';
 import 'angular-ui-router';
