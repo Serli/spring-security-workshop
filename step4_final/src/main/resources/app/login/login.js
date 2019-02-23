@@ -1,4 +1,5 @@
 import {bootstrap, module} from 'angular';
+import "@babel/polyfill";
 import Login from "./login/login";
 import "jquery";
 
