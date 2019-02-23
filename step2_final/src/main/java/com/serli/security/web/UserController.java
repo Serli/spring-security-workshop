@@ -23,17 +23,6 @@ class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserRepository userRepository;
-
-
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
-
-//    @PostMapping("/indirection")
-//    public void indirection(HttpServletRequest request,  HttpServletResponse response) throws IOException, ServletException {
-//        //request.getRequestDispatcher("/login").forward(request, response);
-//    }
 
     @GetMapping("/api/user/current")
     ResponseEntity<User> getUserConnected() {
