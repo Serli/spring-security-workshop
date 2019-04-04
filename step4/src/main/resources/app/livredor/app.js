@@ -1,27 +1,38 @@
-import {bootstrap, module} from 'angular';
+import angular from 'angular';
 import Comment from "./comment/comment";
-import "../style/app.css";
+import "../style/app.css";import "jquery";
 
-
-import router from './router/router';
-import 'angular-ui-router';
+import CommentsComponent from './comment/comment';
+import uirouter from '@uirouter/angularjs';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import 'angular-cookies';
 
 import {default as userServiceName, UserService} from "../service/UserService";
-import {CommentService, default as commentServiceName} from "../service/CommentService";
-
-import {default as csrfInterceptorName, csrfInterceptor} from "../service/Interceptor";
-
-module('app', ['ui.router'])
+// Declare livredor level module which depends on views, and core components
+angular.module('app', [uirouter])
     .component(Comment.name, Comment.component)
     .service(userServiceName, UserService)
-    .service(commentServiceName, CommentService)
-    .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', router])
-    .factory(csrfInterceptorName, csrfInterceptor)
-    .config(['$httpProvider', function ($httpProvider) {
-        $httpProvider.interceptors.push(csrfInterceptorName);
+    .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+
+
+        const comments = {
+            name: "comments",
+            state: {
+                url: "/comments",
+                views: {
+                    'main@': {
+                        component: CommentsComponent.name
+                    }
+                }
+            }
+        };
+
+        $urlRouterProvider.otherwise("/comments");
+
+        $stateProvider
+            .state(comments.name, comments.state)
+
     }])
 
-bootstrap(document.body, ['app']);
+
+angular.bootstrap(document.body, ['app']);
