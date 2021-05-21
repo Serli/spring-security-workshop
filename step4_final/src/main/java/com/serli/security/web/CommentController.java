@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -20,7 +21,11 @@ public class CommentController {
 
     @GetMapping
     Collection<Comment> users() {
-        return commentRepository.findAll();
+        List<Comment> all = commentRepository.findAll();
+        all.forEach(comment->{
+            comment.getUser().setPassword(null);
+        });
+        return all;
     }
 
     @PostMapping

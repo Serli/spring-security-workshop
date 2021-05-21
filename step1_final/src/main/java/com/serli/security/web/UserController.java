@@ -47,6 +47,5 @@ class UserController {
         } else {
             response.sendRedirect("/#!/login/error");
         }
-
     }
 }

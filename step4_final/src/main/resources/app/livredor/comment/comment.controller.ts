@@ -6,12 +6,13 @@ export default class CommentCtrl {
     private static readonly $inject=[
         userServiceName,
         "$sce",
-        commentServiceName
+        commentServiceName,
+        "$state"
     ]
     private comments: Array<any>;
     private newCommentText: string;
 
-    constructor(private userService:UserService, private $sce, private commentService:CommentService) {
+    constructor(private userService:UserService, private $sce, private commentService:CommentService, private $state) {
     }
 
     $onInit() {
@@ -45,6 +46,10 @@ export default class CommentCtrl {
             alert("Il faut saisir un texte.")
         }
 
+    }
+
+    showUser(user){
+        this.$state.go("user", {id:user.id})
     }
 
     closeNewComment() {

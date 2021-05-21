@@ -14,6 +14,24 @@ export default class CommentCtrl {
     loadComments() {
         console.log("Chargement des commentaires");
         this.isLoading = true;
+
+        fetch('/api/comments',{
+            headers:{
+                'Authorization': `Bearer ${this.userService.token}`
+            }
+        })
+            .then((reponse)=>{
+                reponse.status
+                if(reponse.status > 400){
+                    throw Exc
+                }
+                return reponse.text()
+            })
+            .then((html)=> )
+            .catch(e=>{
+
+            })
+
         this.$http.get('/api/comments',{
             headers:{
                 'Authorization': `Bearer ${this.userService.token}`
@@ -22,7 +40,10 @@ export default class CommentCtrl {
             .then((response) => {
                 this.comments = response.data;
                 this.isLoading = false;
-            });
+            })
+            .catch();
+
+
     }
 
     valider() {

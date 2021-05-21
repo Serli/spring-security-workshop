@@ -20,6 +20,7 @@ export default class CommentCtrl {
             .then((response) => {
                 this.comments = response.data;
             });
+
     }
 
     valider() {

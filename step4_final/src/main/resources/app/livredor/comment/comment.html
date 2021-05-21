@@ -13,15 +13,17 @@
 <main class="App-intro">
   <div class="comments-container">
 
-    <div ng-repeat="comment in ctrl.comments track by $index" class="comment">
+    <div ng-repeat="comment in ctrl.comments track by $index" class="comment" >
       <div ng-if="ctrl.userService.user.admin"
            ng-click="ctrl.deleteComment(comment)"><span class="fa fa-times"></span></div>
       <div class="comment-text" ng-bind-html="ctrl.$sce.trustAsHtml(comment.text)"></div>
-      <div class="comment-writer">Ecris par {{comment.user.name}}</div>
+      <div class="comment-writer" ng-click="ctrl.showUser(comment.user)">Ecris par {{comment.user.name}}</div>
     </div>
   </div>
 
+<div ui-view="user">
 
+</div>
 </main>
 <footer class="new-comment">
 
