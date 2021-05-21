@@ -1,11 +1,6 @@
 {
   "name": "step1",
   "version": "1.0.0",
-  "scripts": {
-    "build": "rimraf dist && webpack --bail --progress --profile",
-    "server": "webpack-dev-server --history-api-fallback --inline --progress",
-    "start": "npm run server"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Serli/spring-security-workshop.git"
@@ -35,6 +30,6 @@
     "@babel/preset-env": "^7.4.3",
     "@types/angular-ui-router": "1.1.40",
     "autoprefixer": "^9.5.0",
-    "parcel-bundler": "^1.12.3"
+    "parcel-bundler": "^1.12.5"
   }
 }

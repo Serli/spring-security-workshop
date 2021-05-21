@@ -32,6 +32,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -56,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login", "/*.js", "/*.html", "/*.css", "/*.woff2", "/*.woff", "/*.ttf").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/livredor").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/comments").hasAuthority("ROLE_ADMIN")
@@ -99,6 +103,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Bean
     AuthenticationSuccessHandler getAuthSuccessHandler() {
+
+
         AuthenticationSuccessHandler handler = (httpServletRequest, httpServletResponse, authentication) -> {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             final User user = (User) authentication.getPrincipal();

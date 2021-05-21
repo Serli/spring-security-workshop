@@ -39,8 +39,6 @@ module('login', [
                 }
             }
         };
-
-
         $urlRouterProvider.otherwise("/login");
 
         $stateProvider

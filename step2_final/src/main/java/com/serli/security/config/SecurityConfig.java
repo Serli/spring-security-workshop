@@ -22,6 +22,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     @Autowired
     UserService userDetailsService;
 
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationProvider getAuthProvider() {
+        AppAuthProvider provider = new AppAuthProvider(bCryptPasswordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
@@ -49,17 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
-    @Bean
-    public AuthenticationProvider getAuthProvider() {
-        AppAuthProvider provider = new AppAuthProvider(bCryptPasswordEncoder());
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

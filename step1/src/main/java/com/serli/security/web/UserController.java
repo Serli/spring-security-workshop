@@ -16,4 +16,8 @@ class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
+
+    public Boolean connect(String username, String password){
+
+    }
 }

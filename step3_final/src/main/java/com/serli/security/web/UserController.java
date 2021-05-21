@@ -21,6 +21,7 @@ class UserController {
     @GetMapping("/current")
     ResponseEntity<?> getUserConnected() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return ResponseEntity.ok().body(user);
     }
 

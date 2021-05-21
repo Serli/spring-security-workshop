@@ -45,6 +45,20 @@ export class UserService {
             });
     }
 
+    getUser(id){
+        return this.$http
+            .get(`/api/user/${id}`, {
+                credentials: 'include',
+            })
+            .then(resp => {
+                if (resp.status === 200) {
+                    return resp.data;
+                }
+            })
+            .catch((e) => {
+            });
+    }
+
 }
 
 export default "UserService";
