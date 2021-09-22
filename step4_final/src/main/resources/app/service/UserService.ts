@@ -56,6 +56,7 @@ export class UserService {
                 }
             })
             .catch((e) => {
+
             });
     }
 
