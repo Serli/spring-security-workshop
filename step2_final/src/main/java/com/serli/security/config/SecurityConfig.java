@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/login", "/*.js", "/*.html", "/*.css", "/*.map").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(getAuthProvider())

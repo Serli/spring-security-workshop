@@ -1,9 +1,4 @@
-export class UserService {
-
-    constructor($state, $http) {
-        this.$state = $state;
-        this.$http = $http;
-    }
+export default class UserService {
 
     set user(user) {
         this._user = user;
@@ -45,4 +40,3 @@ export class UserService {
 
 }
 
-export default "UserService"

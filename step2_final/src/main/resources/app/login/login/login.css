@@ -1,4 +1,4 @@
-login header {
+ header {
   position: fixed;
   top:0;
   left:0;
@@ -14,18 +14,18 @@ login header {
   box-shadow: -2px 2px 10px 0px #333;
 }
 
-login header > span {
+ header > span {
   flex:1;
   display:flex;
   justify-content: center;
 }
 
-login header > span.title {
+ header > span.title {
   font-size: 3em;
   color: goldenrod;
 }/* styles in src/style directory are applied to the whole page */
 
-login main {
+ main {
   padding: 1em;
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
@@ -33,7 +33,7 @@ login main {
   display: block;
 }
 
-login footer {
+ footer {
   text-align: center;
   font-size: 0.8em;
 }
@@ -76,7 +76,7 @@ login footer {
   border-radius: 5px;
 }
 
-login .error {
+ .error {
   font-size: 2em;
   color:darkred;
 }

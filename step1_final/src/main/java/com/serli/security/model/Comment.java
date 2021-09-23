@@ -11,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 public class Comment {
+
     @Id
     @GeneratedValue
     private Long id;

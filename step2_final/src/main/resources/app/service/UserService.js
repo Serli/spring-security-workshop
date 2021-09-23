@@ -1,10 +1,4 @@
-export class UserService {
-
-    constructor($state, $http) {
-        this.$state = $state;
-        this.$http = $http;
-        this.api = "/api/user";
-    }
+export default class UserService {
 
     set user(user) {
         this._user = user;
@@ -15,21 +9,42 @@ export class UserService {
     }
 
     deconnecter() {
-        document.location.href = `${this.api}/logout`;
+        this.user = undefined;
+        document.location.href = "/";
     }
 
-    getCurrentUser() {
-        return this.$http.get(`${this.api}/current`)
+    initUser() {
+        return fetch(`/api/user/current`)
             .then(resp => {
                 if (resp.status === 200) {
-                    this._user = resp.data;
-                    return this._user;
+                    return resp.json();
+
                 }
-            }).catch((e) => {
+            })
+            .then(user=>{
+                this._user = user;
+                return this._user;
+            })
+            .catch((e) => {
                 alert(e);
             });
     }
 
+    getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
 }
 
-export default "UserService"
