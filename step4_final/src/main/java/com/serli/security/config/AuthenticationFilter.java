@@ -57,7 +57,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         Optional<User> userOpt = userService.findById(userId);
                         userOpt.ifPresent(user -> {
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             log.info("{} {} : authenticated user {}", request.getMethod(), request.getRequestURI(), user.getUsername());
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         });
