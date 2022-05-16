@@ -22,10 +22,10 @@ $ npm install
 
 ```
 # démarrer le serveur
-$ npm start
+$ npm run dev
 ```
 
-Rendez-vous [http://localhost:9000/](http://localhost:9000/) dans votre navigateur.
+Rendez-vous [http://localhost:1234/](http://localhost:1234/) dans votre navigateur.
 
 # Table des Matières
 
