@@ -26,7 +26,4 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-### npm/yarn ###
-package-lock.json
-yarn.lock
+step*_final/
